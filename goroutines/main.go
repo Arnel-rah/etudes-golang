@@ -1,26 +1,37 @@
 package main
 
 import (
-    "fmt"
-    "time"
+	"fmt"
+	"time"
 )
 
 func executerTache(id int, ch chan string) {
-    fmt.Printf("Tâche %d commencée\n", id)
+	fmt.Printf("Tâche %d commencée\n", id)
+	time.Sleep(time.Duration(2+id) * time.Second)
 
-    time.Sleep(time.Duration(2+id) * time.Second)
+	// Envoyer le résultat dans le channel
+	resultat := fmt.Sprintf("Tâche %d terminée avec succès", id)
+	ch <- resultat
 
-    // TODO: Envoyer le résultat dans le channel
-
-    fmt.Printf("Tâche %d terminée\n", id)
+	fmt.Printf("Tâche %d terminée\n", id)
 }
 
 func main() {
-    // TODO: Créer un channel
+	// Créer un channel
+	resultats := make(chan string)
 
-    // TODO: Lancer 5 goroutines
+	// Lancer 5 goroutines
+	for i := 1; i <= 5; i++ {
+		go executerTache(i, resultats)
+	}
 
-    // TODO: Recevoir les résultats
+	// Recevoir les résultats
+	for i := 0; i < 5; i++ {
+		resultat := <-resultats
+		fmt.Println(resultat)
+	}
 
-    // TODO: Afficher le résumé
+	// Afficher le résumé
+	fmt.Println("=============================")
+	fmt.Println("Résumé : 5 tâches complétées avec succès!")
 }
